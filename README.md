@@ -2,7 +2,7 @@
 
 A browser-based tool that translates professional bike fit measurements into the specific components you need for a given frame — or checks what fit numbers a particular setup produces.
 
-**Live site:** [jakesw.github.io/bikefit](https://jakesw.github.io/bikefit)
+**Live site:** [jakesw.com/bikefit](https://jakesw.com/bikefit)
 
 ## Features
 
