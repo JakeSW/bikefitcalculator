@@ -752,6 +752,54 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Hoods / Handlebars Toggle */
+  .measure-toggle-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 12px;
+    vertical-align: middle;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .measure-toggle-wrapper .separator {
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  .measure-toggle {
+    display: inline-flex;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .measure-toggle button {
+    padding: 3px 10px;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-family: inherit;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .measure-toggle button.active {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .measure-toggle button:hover:not(.active) {
+    color: var(--text);
+    background: var(--border);
+  }
+
   .hidden { display: none !important; }
 
   @media (max-width: 768px) {
@@ -851,7 +899,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   <!-- Mode: Forward — Component Inputs -->
   <div class="card calculator-view" id="card-components">
-    <h2>Components</h2>
+    <h2>Components <span class="measure-toggle-wrapper"><span class="separator">&middot;</span> Measure to: <span class="measure-toggle"><button class="active" data-target="hoods" onclick="setMeasureTarget('hoods')">Hoods</button><button data-target="bars" onclick="setMeasureTarget('bars')">Handlebars</button></span></span></h2>
     <div class="input-grid">
       <div class="input-group">
         <label>Stem Length <span class="unit">(mm)</span> <span class="label-tip">&#9432;<span class="tip-text">Centre-to-centre length of the stem. Common road sizes are 80–130mm. Longer stems increase reach to the hoods.</span></span></label>
@@ -891,14 +939,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   <!-- Mode: Reverse — Fit Targets + Known Components -->
   <div class="card calculator-view hidden" id="card-targets">
-    <h2>Fit Targets</h2>
+    <h2>Fit Targets <span class="measure-toggle-wrapper"><span class="separator">&middot;</span> Measure to: <span class="measure-toggle"><button class="active" data-target="hoods" onclick="setMeasureTarget('hoods')">Hoods</button><button data-target="bars" onclick="setMeasureTarget('bars')">Handlebars</button></span></span></h2>
     <div class="input-grid">
       <div class="input-group">
-        <label>Target Saddle-to-Hood Reach <span class="unit">(mm)</span> <span class="label-tip">&#9432;<span class="tip-text">Desired horizontal distance from the saddle BRP (Biomechanical Reference Point) to the brake hoods. This is the main measurement for how stretched out your riding position is.</span></span></label>
+        <label><span id="label-target-reach">Target Saddle-to-Hood Reach</span> <span class="unit">(mm)</span> <span class="label-tip">&#9432;<span class="tip-text">Desired horizontal distance from the saddle BRP (Biomechanical Reference Point) to the brake hoods. This is the main measurement for how stretched out your riding position is.</span></span></label>
         <input type="number" id="target-reach" value="760" step="1">
       </div>
       <div class="input-group">
-        <label>Target Saddle-to-Hood Drop <span class="unit">(mm)</span> <span class="label-tip">&#9432;<span class="tip-text">Desired vertical drop from the saddle BRP to the brake hoods. Positive values mean the hoods are lower than the saddle. More drop = more aggressive position.</span></span></label>
+        <label><span id="label-target-drop">Target Saddle-to-Hood Drop</span> <span class="unit">(mm)</span> <span class="label-tip">&#9432;<span class="tip-text">Desired vertical drop from the saddle BRP to the brake hoods. Positive values mean the hoods are lower than the saddle. More drop = more aggressive position.</span></span></label>
         <input type="number" id="target-drop" value="100" step="1">
       </div>
       <div class="input-group">
@@ -1003,12 +1051,14 @@ document.addEventListener('DOMContentLoaded', function() {
     <h3>How it works</h3>
     <p>All calculations use the geometric relationship between the bottom bracket (BB), saddle, and hood positions. The frame's stack, reach, seat tube angle, and head tube angle define the skeleton. Components (stem, spacers, handlebars) extend from the top of the head tube to the hood position along the steerer and stem axes using trigonometry.</p>
 
+    <h3>Measure to: Hoods / Handlebars</h3>
+    <p>Use the toggle next to the Components and Fit Targets headings to switch between measuring to the <strong>Hoods</strong> (brake hood position, accounting for handlebar reach) or the <strong>Handlebars</strong> (top of the bar at the stem clamp, ignoring handlebar reach). All fit results and the diagram update accordingly.</p>
+
     <h3>Mode 1: Components to Fit</h3>
     <p>Enter your frame geometry and the components you have (or are considering). The calculator shows the resulting fit numbers:</p>
     <ul>
-      <li><strong>Saddle-to-Hood Reach</strong> &mdash; horizontal distance from saddle to hoods</li>
-      <li><strong>Saddle-to-Hood Drop</strong> &mdash; how far the hoods sit below the saddle (positive = hoods lower)</li>
-      <li><strong>Saddle-to-Hood Distance</strong> &mdash; straight-line distance between the two</li>
+      <li><strong>Saddle-to-Reach</strong> &mdash; horizontal distance from saddle to the measurement point</li>
+      <li><strong>Saddle-to-Drop</strong> &mdash; how far the measurement point sits below the saddle (positive = lower)</li>
     </ul>
 
     <h3>Mode 2: Fit Targets to Components</h3>
@@ -1021,6 +1071,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <h3>Frame presets</h3>
     <p>Click the <strong>Presets</strong> button to open a searchable overlay with multiple bike brands and models. Each model lists its available sizes &mdash; select one to instantly load the frame geometry. Dimmed sizes are bikes we haven&rsquo;t added geometry data for yet. You can always enter or adjust the geometry fields manually for any frame.</p>
+
+    <h3>Compare Frames</h3>
+    <p>Click <strong>Compare Frames</strong> to select two frames from the database and see their geometry overlaid on the same diagram with a side-by-side comparison table.</p>
 
     <h3>Key inputs</h3>
     <ul>
@@ -1434,6 +1487,17 @@ function forwardCalc(params) {
   const saddleToHoodDrop = saddle.y - hood.hood.y; // positive = hoods lower than saddle
   const saddleToHoodDist = Math.sqrt(saddleToHoodReach ** 2 + saddleToHoodDrop ** 2);
 
+  // Handlebar position: same Y as hood (bar radius above center) but no barReach
+  const handlebar = { x: hood.stemEnd.x, y: hood.stemEnd.y + (params.barDiameter || 0) / 2 };
+
+  // Active measurement point based on toggle
+  const mp = measureTarget === 'bars' ? handlebar : hood.hood;
+  const saddleToMeasureReach = mp.x - saddle.x;
+  const saddleToMeasureDrop = saddle.y - mp.y;
+  const saddleToMeasureDist = Math.sqrt(saddleToMeasureReach ** 2 + saddleToMeasureDrop ** 2);
+  const measureHeight = mp.y;
+  const measureReachFromBB = mp.x;
+
   // Effective saddle height (vertical from BB)
   const saddleVertical = saddle.y;
 
@@ -1455,11 +1519,18 @@ function forwardCalc(params) {
   return {
     saddle,
     hood: hood.hood,
+    handlebar,
+    measurePoint: mp,
     stemBase: hood.stemBase,
     stemEnd: hood.stemEnd,
     saddleToHoodReach,
     saddleToHoodDrop,
     saddleToHoodDist,
+    saddleToMeasureReach,
+    saddleToMeasureDrop,
+    saddleToMeasureDist,
+    measureHeight,
+    measureReachFromBB,
     saddleVertical,
     hoodHeight,
     hoodReachFromBB,
@@ -1680,35 +1751,41 @@ function drawBikeDiagram(params, results) {
     html += `<text x="${(sbx + sex) / 2}" y="${(sby + sey) / 2 - 8}" fill="${colYellow}" font-size="10" text-anchor="middle" font-weight="600">Stem</text>`;
   }
 
-  // Handlebar (stem end to hood)
+  // Handlebar (stem end to hood) — always draw the physical bar line
   if (results.stemEnd && results.hood) {
     const sex = tx(results.stemEnd.x), sey = ty(results.stemEnd.y);
     const hx = tx(results.hood.x), hy = ty(results.hood.y);
     html += `<line x1="${sex}" y1="${sey}" x2="${hx}" y2="${hy}" stroke="${colGreen}" stroke-width="2.5" stroke-linecap="round"/>`;
-    html += `<circle cx="${hx}" cy="${hy}" r="5" fill="${colGreen}" stroke="${colHoodStroke}" stroke-width="1"/>`;
-    html += `<text x="${hx + 8}" y="${hy - 8}" fill="${colGreen}" font-size="10" font-weight="600">Hoods</text>`;
+
+    // Green dot: hoods position when measuring to hoods, stem/bar junction when measuring to handlebars
+    const isHoods = measureTarget === 'hoods';
+    const dotPos = isHoods ? results.hood : results.stemEnd;
+    const dotX = tx(dotPos.x), dotY = ty(dotPos.y);
+    const mpLabel = isHoods ? 'Hoods' : 'Bars';
+    html += `<circle cx="${dotX}" cy="${dotY}" r="5" fill="${colGreen}" stroke="${colHoodStroke}" stroke-width="1"/>`;
+    html += `<text x="${dotX + 8}" y="${dotY - 8}" fill="${colGreen}" font-size="10" font-weight="600">${mpLabel}</text>`;
   }
 
-  // Dimension: Saddle to Hood Reach (horizontal)
-  if (results.hood && saddle) {
-    const hx = tx(results.hood.x), hy = ty(results.hood.y);
-    const dimY = Math.max(saddleY, hy) + 40;
+  // Dimension: Saddle to measurement point Reach (horizontal)
+  if (results.measurePoint && saddle) {
+    const mpx = tx(results.measurePoint.x), mpy = ty(results.measurePoint.y);
+    const dimY = Math.max(saddleY, mpy) + 40;
     html += `<line x1="${saddleX}" y1="${dimY - 5}" x2="${saddleX}" y2="${dimY + 5}" stroke="${colAccent}" stroke-width="1"/>`;
-    html += `<line x1="${hx}" y1="${dimY - 5}" x2="${hx}" y2="${dimY + 5}" stroke="${colAccent}" stroke-width="1"/>`;
-    html += `<line x1="${saddleX}" y1="${dimY}" x2="${hx}" y2="${dimY}" stroke="${colAccent}" stroke-width="1" stroke-dasharray="3,3"/>`;
-    const reachLabel = Math.round(results.saddleToHoodReach) + 'mm reach';
-    html += `<text x="${(saddleX + hx) / 2}" y="${dimY + 14}" fill="${colAccent}" font-size="10" text-anchor="middle" font-weight="600">${reachLabel}</text>`;
+    html += `<line x1="${mpx}" y1="${dimY - 5}" x2="${mpx}" y2="${dimY + 5}" stroke="${colAccent}" stroke-width="1"/>`;
+    html += `<line x1="${saddleX}" y1="${dimY}" x2="${mpx}" y2="${dimY}" stroke="${colAccent}" stroke-width="1" stroke-dasharray="3,3"/>`;
+    const reachLabel = Math.round(results.saddleToMeasureReach) + 'mm reach';
+    html += `<text x="${(saddleX + mpx) / 2}" y="${dimY + 14}" fill="${colAccent}" font-size="10" text-anchor="middle" font-weight="600">${reachLabel}</text>`;
   }
 
-  // Dimension: Saddle to Hood Drop (vertical)
-  if (results.hood && saddle) {
-    const hx = tx(results.hood.x), hy = ty(results.hood.y);
-    const dimX = Math.min(saddleX, hx) - 30;
+  // Dimension: Saddle to measurement point Drop (vertical)
+  if (results.measurePoint && saddle) {
+    const mpx = tx(results.measurePoint.x), mpy = ty(results.measurePoint.y);
+    const dimX = Math.min(saddleX, mpx) - 30;
     html += `<line x1="${dimX - 5}" y1="${saddleY}" x2="${dimX + 5}" y2="${saddleY}" stroke="${colGreen}" stroke-width="1"/>`;
-    html += `<line x1="${dimX - 5}" y1="${hy}" x2="${dimX + 5}" y2="${hy}" stroke="${colGreen}" stroke-width="1"/>`;
-    html += `<line x1="${dimX}" y1="${saddleY}" x2="${dimX}" y2="${hy}" stroke="${colGreen}" stroke-width="1" stroke-dasharray="3,3"/>`;
-    const dropLabel = Math.round(results.saddleToHoodDrop) + 'mm drop';
-    html += `<text x="${dimX - 5}" y="${(saddleY + hy) / 2}" fill="${colGreen}" font-size="10" text-anchor="end" font-weight="600">${dropLabel}</text>`;
+    html += `<line x1="${dimX - 5}" y1="${mpy}" x2="${dimX + 5}" y2="${mpy}" stroke="${colGreen}" stroke-width="1"/>`;
+    html += `<line x1="${dimX}" y1="${saddleY}" x2="${dimX}" y2="${mpy}" stroke="${colGreen}" stroke-width="1" stroke-dasharray="3,3"/>`;
+    const dropLabel = Math.round(results.saddleToMeasureDrop) + 'mm drop';
+    html += `<text x="${dimX - 5}" y="${(saddleY + mpy) / 2}" fill="${colGreen}" font-size="10" text-anchor="end" font-weight="600">${dropLabel}</text>`;
   }
 
   // Stack and Reach dimension lines (subtle)
@@ -1728,6 +1805,29 @@ function drawBikeDiagram(params, results) {
 // ============================================================
 
 let currentMode = 'forward';
+let measureTarget = 'hoods'; // 'hoods' or 'bars'
+
+function setMeasureTarget(target) {
+  measureTarget = target;
+  document.querySelectorAll('.measure-toggle button').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.target === target);
+  });
+  updateTargetLabels();
+  if (currentMode === 'compare') renderCompareView();
+  else recalculate();
+}
+
+function updateTargetLabels() {
+  const reachLabel = document.getElementById('label-target-reach');
+  const dropLabel = document.getElementById('label-target-drop');
+  if (measureTarget === 'bars') {
+    reachLabel.textContent = 'Target Saddle-to-Handlebar Reach';
+    dropLabel.textContent = 'Target Saddle-to-Handlebar Drop';
+  } else {
+    reachLabel.textContent = 'Target Saddle-to-Hood Reach';
+    dropLabel.textContent = 'Target Saddle-to-Hood Drop';
+  }
+}
 
 function setMode(mode) {
   currentMode = mode;
@@ -1799,7 +1899,7 @@ function recalculate() {
       ...frameParams,
       saddleHeight: getVal('target-saddle-height'),
       saddleSetback: getVal('target-saddle-setback'),
-      barReach: getVal('target-bar-reach'),
+      barReach: measureTarget === 'bars' ? 0 : getVal('target-bar-reach'),
       stemHeight: getVal('target-stem-height'),
       barDiameter: getVal('target-bar-diameter'),
       targetReach: getVal('target-reach'),
@@ -1822,7 +1922,7 @@ function recalculate() {
         stemAngle: result.stemAngle,
         spacerStack: result.spacerStack,
         stemHeight: params.stemHeight,
-        barReach: params.barReach,
+        barReach: getVal('target-bar-reach'), // always real barReach for forward calc
         barDiameter: params.barDiameter,
         saddleHeight: params.saddleHeight,
         saddleSetback: params.saddleSetback
@@ -1841,17 +1941,21 @@ function recalculate() {
 
 function renderForwardResults(r) {
   const container = document.getElementById('forward-results');
+  const isHoods = measureTarget === 'hoods';
+  const ptName = isHoods ? 'Hood' : 'Handlebar';
+  const ptDesc = isHoods ? 'brake hoods' : 'handlebar (top of bar at stem clamp)';
 
   const items = [
-    { label: 'Saddle → Hood Reach', value: r.saddleToHoodReach, unit: 'mm', highlight: true, tooltip: 'Horizontal distance from the saddle BRP (Biomechanical Reference Point) to the brake hoods. The primary measurement for how stretched out your position is.' },
-    { label: 'Saddle → Hood Drop', value: r.saddleToHoodDrop, unit: 'mm', highlight: true, tooltip: 'Vertical drop from the saddle BRP to the brake hoods. Positive means hoods are lower than saddle. More drop = more aggressive.' },
-    { label: 'Saddle → Bar Reach', value: r.saddleToBarReach, unit: 'mm', tooltip: 'Horizontal distance from the saddle BRP to the stem/bar junction. Excludes handlebar reach, so reflects the frame and stem position only.' },
-    { label: 'Saddle → Hood Distance', value: r.saddleToHoodDist, unit: 'mm', tooltip: 'Straight-line distance from the saddle BRP to the brake hoods, combining both reach and drop.' },
-    { label: 'Effective Seat Tube Angle', value: r.effectiveSTA, unit: '°', tooltip: 'Actual angle from the BB centre to the saddle BRP, accounting for any saddle setback. May differ from the frame seat tube angle.' },
-    { label: 'Saddle Height (vertical)', value: r.saddleVertical, unit: 'mm', tooltip: 'True vertical height of the saddle BRP above the bottom bracket centre. Slightly less than the along-tube saddle height measurement.' },
-    { label: 'Hood Height above BB', value: r.hoodHeight, unit: 'mm', tooltip: 'Vertical height of the brake hoods above the bottom bracket centre. Determined by frame stack, spacers, stem, and bar.' },
-    { label: 'Hood Reach from BB', value: r.hoodReachFromBB, unit: 'mm', tooltip: 'Horizontal distance from the bottom bracket centre to the brake hoods. Shows how far forward the hoods are from the BB, combining frame reach, spacers, stem, and handlebar reach.' },
+    { label: `Saddle \u2192 ${ptName} Reach`, value: r.saddleToMeasureReach, unit: 'mm', highlight: true, tooltip: `Horizontal distance from the saddle BRP to the ${ptDesc}. The primary measurement for how stretched out your position is.` },
+    { label: `Saddle \u2192 ${ptName} Drop`, value: r.saddleToMeasureDrop, unit: 'mm', highlight: true, tooltip: `Vertical drop from the saddle BRP to the ${ptDesc}. Positive means ${isHoods ? 'hoods are' : 'bars are'} lower than saddle. More drop = more aggressive.` },
   ];
+
+  items.push(
+    { label: 'Effective Seat Tube Angle', value: r.effectiveSTA, unit: '\u00B0', tooltip: 'Actual angle from the BB centre to the saddle BRP, accounting for any saddle setback. May differ from the frame seat tube angle.' },
+    { label: 'Saddle Height (vertical)', value: r.saddleVertical, unit: 'mm', tooltip: 'True vertical height of the saddle BRP above the bottom bracket centre. Slightly less than the along-tube saddle height measurement.' },
+    { label: `${ptName} Height above BB`, value: r.measureHeight, unit: 'mm', tooltip: `Vertical height of the ${ptDesc} above the bottom bracket centre. Determined by frame stack, spacers, stem, and bar.` },
+    { label: `${ptName} Reach from BB`, value: r.measureReachFromBB, unit: 'mm', tooltip: `Horizontal distance from the BB centre to the ${ptDesc}. Shows how far forward the ${isHoods ? 'hoods are' : 'bars are'} from the BB.` }
+  );
 
   container.innerHTML = items.map(item => {
     const val = Math.round(item.value * 10) / 10;
