@@ -418,6 +418,11 @@ footer {
   background: var(--accent-dim);
 }
 
+.frame-action-btn {
+  width: 200px;
+  text-align: center;
+}
+
 .preset-active-label {
   font-size: 0.8rem;
   color: var(--text-dim);

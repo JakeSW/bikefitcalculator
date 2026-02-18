@@ -652,16 +652,17 @@ function drawBikeDiagram(params, results) {
     html += `<text x="${(sbx + sex) / 2}" y="${(sby + sey) / 2 - 8}" fill="${colYellow}" font-size="10" text-anchor="middle" font-weight="600">Stem</text>`;
   }
 
-  // Handlebar (stem end to hood) — always draw the physical bar line
+  // Handlebar (stem end to hood) — drawn flat at stem end height for clarity
   if (results.stemEnd && results.hood) {
     const sex = tx(results.stemEnd.x), sey = ty(results.stemEnd.y);
-    const hx = tx(results.hood.x), hy = ty(results.hood.y);
-    html += `<line x1="${sex}" y1="${sey}" x2="${hx}" y2="${hy}" stroke="${colGreen}" stroke-width="2.5" stroke-linecap="round"/>`;
+    const hx = tx(results.hood.x);
+    html += `<line x1="${sex}" y1="${sey}" x2="${hx}" y2="${sey}" stroke="${colGreen}" stroke-width="2.5" stroke-linecap="round"/>`;
 
     // Green dot: hoods position when measuring to hoods, stem/bar junction when measuring to handlebars
+    // Dot is drawn flat at stem end height to match the bar line
     const isHoods = measureTarget === 'hoods';
-    const dotPos = isHoods ? results.hood : results.stemEnd;
-    const dotX = tx(dotPos.x), dotY = ty(dotPos.y);
+    const dotX = isHoods ? hx : sex;
+    const dotY = sey;
     const mpLabel = isHoods ? 'Hoods' : 'Bars';
     html += `<circle cx="${dotX}" cy="${dotY}" r="5" fill="${colGreen}" stroke="${colHoodStroke}" stroke-width="1"/>`;
     html += `<text x="${dotX + 8}" y="${dotY - 8}" fill="${colGreen}" font-size="10" font-weight="600">${mpLabel}</text>`;

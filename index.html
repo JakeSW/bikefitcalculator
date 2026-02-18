@@ -47,11 +47,11 @@
       </div>
     </div>
     <div class="preset-trigger">
-      <button class="preset-trigger-btn" onclick="openPresetModal()">Preset Frame Sizes</button>
+      <button class="preset-trigger-btn frame-action-btn" onclick="openPresetModal()">Preset Frame Sizes</button>
       <span class="preset-active-label hidden" id="active-preset-label"></span>
     </div>
     <div class="preset-trigger">
-      <button class="preset-trigger-btn" onclick="setMode('compare')" style="background:var(--green)">Compare Frames</button>
+      <button class="preset-trigger-btn frame-action-btn" onclick="setMode('compare')" style="background:var(--green)">Compare Frames</button>
     </div>
   </div>
 
@@ -80,7 +80,7 @@
         <input type="number" id="bar-reach" value="80" step="1">
       </div>
       <div class="input-group">
-        <label>Handlebar Diameter <span class="unit">(mm)</span> <span class="label-tip">&#9432;<span class="tip-text">Outer diameter of the handlebar at the clamp area. Added to the hood height calculation. Standard road bars are 31.8mm (oversized) or 26.0mm (legacy).</span></span></label>
+        <label>Handlebar Diameter <span class="unit">(mm)</span> <span class="label-tip">&#9432;<span class="tip-text">Outer diameter of the handlebar at the clamp area. Half the diameter is added to the vertical height of the hoods/handlebar position, since the contact point sits on top of the bar rather than at its centre. Standard road bars are 31.8mm (oversized) or 26.0mm (legacy).</span></span></label>
         <input type="number" id="bar-diameter" value="31.8" step="0.1">
       </div>
       <div class="input-group">
@@ -105,7 +105,7 @@
       </div>
       <div class="input-group">
         <label><span id="label-target-drop">Target Saddle-to-Hood Drop</span> <span class="unit">(mm)</span> <span class="label-tip">&#9432;<span class="tip-text">Desired vertical drop from the saddle BRP to the brake hoods. Positive values mean the hoods are lower than the saddle. More drop = more aggressive position.</span></span></label>
-        <input type="number" id="target-drop" value="100" step="1">
+        <input type="number" id="target-drop" value="50" step="1">
       </div>
       <div class="input-group">
         <label>Saddle Height <span class="unit">(mm, BB to saddle BRP)</span> <span class="label-tip">&#9432;<span class="tip-text">Distance from the centre of the bottom bracket to the saddle's Biomechanical Reference Point (BRP), measured along the seat tube. The BRP is the designed sit-bone contact point on the saddle.</span></span></label>
@@ -125,7 +125,7 @@
         <input type="number" id="target-stem-height" value="40" step="1">
       </div>
       <div class="input-group">
-        <label>Handlebar Diameter <span class="unit">(mm)</span> <span class="label-tip">&#9432;<span class="tip-text">Outer diameter of the handlebar at the clamp area. Added to the hood height calculation. Standard road bars are 31.8mm (oversized) or 26.0mm (legacy).</span></span></label>
+        <label>Handlebar Diameter <span class="unit">(mm)</span> <span class="label-tip">&#9432;<span class="tip-text">Outer diameter of the handlebar at the clamp area. Half the diameter is added to the vertical height of the hoods/handlebar position, since the contact point sits on top of the bar rather than at its centre. Standard road bars are 31.8mm (oversized) or 26.0mm (legacy).</span></span></label>
         <input type="number" id="target-bar-diameter" value="31.8" step="0.1">
       </div>
     </div>
@@ -203,7 +203,7 @@
 <div class="modal-overlay" id="instructions-modal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal">
     <button class="modal-close" onclick="document.getElementById('instructions-modal').classList.remove('open')">&times;</button>
-    <h2>Bike Fit Cockpit Calculator</h2>
+    <h2><span style="color:var(--accent)">Bike Fit</span> <span style="color:var(--text)">Cockpit Calculator</span></h2>
     <p>This tool helps you translate professional bike fit measurements into the specific components you need for a given frame, or check what fit numbers a particular setup produces. Frame geometry for many popular bikes is available via the built-in presets. For bikes not included, you can find geometry data on the <a href="https://geometrygeeks.bike" target="_blank" rel="noopener" style="color:var(--accent)">geometrygeeks.bike</a> database and enter the values manually.</p>
 
     <h3>How it works</h3>
