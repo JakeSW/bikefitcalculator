@@ -423,6 +423,14 @@ footer {
   text-align: center;
 }
 
+.compare-btn {
+  background: var(--green);
+}
+
+.compare-btn:hover {
+  background: #3db888;
+}
+
 .preset-active-label {
   font-size: 0.8rem;
   color: var(--text-dim);
